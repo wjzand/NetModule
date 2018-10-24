@@ -1,8 +1,15 @@
 package com.android.net
 
+import android.annotation.SuppressLint
+import android.text.TextUtils
+import android.util.Log
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.OkHttpClient.Builder
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.ArrayList
 import java.util.concurrent.TimeUnit
 
 /**
@@ -10,48 +17,88 @@ import java.util.concurrent.TimeUnit
  * 构建retrofit
  *
  */
-final class RetrofitBuilder {
-    var retrofit:Retrofit?= null
-    var okHttpClient:OkHttpClient?= null
+class RetrofitProvider(url: String, connectTime: Long, readTime: Long, writeTime: Long, interceptorList: ArrayList<Interceptor>) {
+    private var retrofit:Retrofit?= null
+    private var okHttpClient:OkHttpClient?= null
+    private var okHttpClientBuilder:OkHttpClient.Builder?=null
 
-    constructor(url: String,readTime: Long,writeTime: Long){
+    init {
+        okHttpClientBuilder = OkHttpClient.Builder()
 
-        okHttpClient = OkHttpClient.Builder()
+        interceptorList.forEach { okHttpClientBuilder!!.addInterceptor(it)}
+
+        okHttpClient = okHttpClientBuilder!!
                 .readTimeout(readTime,TimeUnit.SECONDS)
                 .writeTimeout(writeTime,TimeUnit.SECONDS)
+                .connectTimeout(connectTime,TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true)
                 .build()
-
 
         retrofit = Retrofit.Builder()
                 .baseUrl(url)
-                .client(okHttpClient)
+                .client(okHttpClient!!)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
+    }
 
+    fun <T> createApi(service:Class<T>): T{
+         return retrofit!!.create(service)
     }
 
     object Builder{
-        var url:String = ""
-        var readTime = 10L
-        var writeTime = 10L
+        private var url:String = ""
+        private var readTime = 10L
+        private var writeTime = 10L
+        private var connectTime = 10L
+        private var interceptorList:ArrayList<Interceptor> = arrayListOf()
+        private val TAG:String = this.javaClass.simpleName
+        private val loggingInterceptor = HttpLoggingInterceptor()
 
-        fun changeUrl(url:String): Builder {
+        @SuppressLint("LogNotTimber")
+        fun addUrl(url:String): Builder {
+            if(TextUtils.isEmpty(url)) throw Exception("url 不能为空")
             this.url = url
+            if(!this.url.endsWith("\\")) this.url += "\\"
+            Log.e(TAG,"请求参数：{" + this.url + "}")
             return this
         }
 
-        fun changeReadTime(readTime:Long): Builder {
+        fun addConnectTime(connectTime:Long): Builder {
+            this.connectTime = connectTime
+            return this
+        }
+
+        fun addReadTime(readTime:Long): Builder {
             this.readTime = readTime
             return this
         }
 
-
-        fun changeWriteTime(writeTime:Long): Builder {
+        fun addWriteTime(writeTime:Long): Builder {
             this.writeTime = writeTime
             return this
         }
 
-        fun build():RetrofitBuilder{
-            return RetrofitBuilder(this.url,this.readTime,this.writeTime)
+        fun addLogInterceptor(logLevel:HttpLoggingInterceptor.Level): Builder {
+            loggingInterceptor.level = logLevel
+            interceptorList.add(loggingInterceptor)
+            return this
+        }
+
+        @SuppressLint("LogNotTimber")
+        fun addInterceptor(interceptor: Interceptor): Builder {
+            if(!interceptorList.contains(interceptor)) {
+                interceptorList.add(interceptor)
+            }else{
+                Log.e(TAG,"interceptor已存在")
+            }
+            return this
+        }
+
+        fun build():RetrofitProvider{
+            return RetrofitProvider(this.url,this.connectTime,this.readTime,this.writeTime, interceptorList)
         }
     }
+
 }
+
