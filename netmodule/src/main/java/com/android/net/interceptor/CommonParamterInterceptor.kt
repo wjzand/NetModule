@@ -2,9 +2,7 @@ package com.android.net.interceptor
 
 import android.annotation.SuppressLint
 import android.util.Log
-import okhttp3.Interceptor
-import okhttp3.Request
-import okhttp3.Response
+import okhttp3.*
 
 /**
  * Created by wjz on 2018/10/24
@@ -26,15 +24,30 @@ class CommonParamterInterceptor(headMap: HashMap<String, String>, paramterMap: H
 
     override fun intercept(chain: Interceptor.Chain?): Response {
         var oldRequest = chain!!.request()
-        when(oldRequest.method()){
-            METHOD_GET -> println()
-            METHOD_POST -> println()
-            METHOD_OPTIONS -> println()
-        }
         var newRequestBuilder = oldRequest.newBuilder()
         addHead(newRequestBuilder)
+        when(oldRequest.method()){
+            METHOD_GET -> addGetParamter(oldRequest,newRequestBuilder)
+            METHOD_POST -> addPostParamter(oldRequest,newRequestBuilder)
+            METHOD_OPTIONS -> addOptionsParamter(oldRequest)
+        }
         var newRequest = newRequestBuilder.build()
         return chain.proceed(newRequest)
+
+    }
+
+    private fun addGetParamter(request: Request,requestBuilder: Request.Builder){
+        var urlBuilder:HttpUrl.Builder = request.url().newBuilder()
+        commonParamterMap.forEach {urlBuilder.addQueryParameter(it.key,it.value)}
+        requestBuilder.url(urlBuilder.build())
+    }
+
+    private fun addPostParamter(request: Request,requestBuilder: Request.Builder){
+       var formBody:FormBody = (request.body() as FormBody?)!!
+    }
+
+
+    private fun addOptionsParamter(request: Request){
 
     }
 

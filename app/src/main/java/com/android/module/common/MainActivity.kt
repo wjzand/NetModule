@@ -22,7 +22,12 @@ class MainActivity : AppCompatActivity() {
         retrofitProvider = RetrofitProvider.Builder
                 .addUrl("http://test-magic-console.startdtapi.com")
                 .addLogInterceptor(HttpLoggingInterceptor.Level.BODY)
-                .addInterceptor(CommonParamterInterceptor.Creater.addHead("mac","D0:F8:8C:B1:02:E8").addHead("versionCode","2").create())
+                .addInterceptor(CommonParamterInterceptor.Creater
+                        .addHead("mac","D0:F8:8C:B1:02:E8")
+                        .addHead("versionCode","2")
+                        .addParamter("111","111")
+                        .addParamter("222","222")
+                        .create())
                 .build()
 
         retrofitProvider!!.createApi(ApiService::class.java)

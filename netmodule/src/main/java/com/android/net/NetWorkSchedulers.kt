@@ -9,7 +9,7 @@ import java.util.*
 
 /**
  * Created by wjz on 2018/11/5
- *
+ * rxJava线程切换省略符
  */
 object NetWorkSchedulers {
     fun <T> composeIoThread(): ObservableTransformer<T,T>{

@@ -79,6 +79,7 @@ class RetrofitProvider(url: String, connectTime: Long, readTime: Long, writeTime
             return this
         }
 
+        @SuppressLint("LogNotTimber")
         fun addLogInterceptor(logLevel:HttpLoggingInterceptor.Level): Builder {
             loggingInterceptor.level = logLevel
             if(interceptorList.contains(loggingInterceptor)){
