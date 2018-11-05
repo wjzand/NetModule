@@ -59,8 +59,8 @@ class RetrofitProvider(url: String, connectTime: Long, readTime: Long, writeTime
         fun addUrl(url:String): Builder {
             if(TextUtils.isEmpty(url)) throw Exception("url 不能为空")
             this.url = url
-            if(!this.url.endsWith("\\")) this.url += "\\"
-            Log.e(TAG,"请求参数：{" + this.url + "}")
+            if(!this.url.endsWith("/")) this.url += "/"
+            Log.e(TAG,"请求域名：{" + this.url + "}")
             return this
         }
 
@@ -81,7 +81,11 @@ class RetrofitProvider(url: String, connectTime: Long, readTime: Long, writeTime
 
         fun addLogInterceptor(logLevel:HttpLoggingInterceptor.Level): Builder {
             loggingInterceptor.level = logLevel
+            if(interceptorList.contains(loggingInterceptor)){
+                interceptorList.remove(loggingInterceptor)
+            }
             interceptorList.add(loggingInterceptor)
+            Log.e(TAG,"加入logInterceptor")
             return this
         }
 
@@ -89,6 +93,7 @@ class RetrofitProvider(url: String, connectTime: Long, readTime: Long, writeTime
         fun addInterceptor(interceptor: Interceptor): Builder {
             if(!interceptorList.contains(interceptor)) {
                 interceptorList.add(interceptor)
+                Log.e(TAG,"加入interceptor")
             }else{
                 Log.e(TAG,"interceptor已存在")
             }

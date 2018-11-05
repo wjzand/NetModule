@@ -10,7 +10,7 @@ import retrofit2.http.Url
  */
 interface ApiService {
 
-    @GET("111")
-    fun ceshi():Observable<MagicMirrorResponse<Entity>>
+    @GET("v1/mirror/update")
+    fun ceshi():Observable<MagicMirrorResponse<Any>>
 
 }
