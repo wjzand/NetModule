@@ -3,6 +3,7 @@ package com.android.net.interceptor
 import android.annotation.SuppressLint
 import android.util.Log
 import okhttp3.*
+import okhttp3.FormBody.Builder
 
 /**
  * Created by wjz on 2018/10/24
@@ -17,7 +18,7 @@ class CommonParamterInterceptor(headMap: HashMap<String, String>, paramterMap: H
 
 
     init {
-        commonHeadMap = headMap;
+        commonHeadMap = headMap
         commonParamterMap = paramterMap
     }
 
@@ -43,7 +44,13 @@ class CommonParamterInterceptor(headMap: HashMap<String, String>, paramterMap: H
     }
 
     private fun addPostParamter(request: Request,requestBuilder: Request.Builder){
-       var formBody:FormBody = (request.body() as FormBody?)!!
+        var formBody:FormBody = (request.body() as FormBody?)!!
+        var builder: FormBody.Builder = FormBody.Builder()
+        for (i in 0..(formBody.size()-1)){
+            builder.add(formBody.name(i),formBody.value(i))
+        }
+        commonParamterMap.forEach { builder.add(it.key,it.value) }
+        requestBuilder.post(builder.build())
     }
 
 

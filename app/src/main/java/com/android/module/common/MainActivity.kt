@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import com.android.net.NetWorkSchedulers
 import com.android.net.RetrofitProvider
+import com.android.net.download.DownLoadManager
 import com.android.net.interceptor.CommonParamterInterceptor
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -23,15 +24,13 @@ class MainActivity : AppCompatActivity() {
                 .addUrl("http://test-magic-console.startdtapi.com")
                 .addLogInterceptor(HttpLoggingInterceptor.Level.BODY)
                 .addInterceptor(CommonParamterInterceptor.Creater
-                        .addHead("mac","D0:F8:8C:B1:02:E8")
-                        .addHead("versionCode","2")
-                        .addParamter("111","111")
-                        .addParamter("222","222")
+                        .addHead("mac","D0:F8:8C:B1:02:E8").addHead("versionCode","2")
+                        .addParamter("111","111").addParamter("222","222")
                         .create())
                 .build()
 
         retrofitProvider!!.createApi(ApiService::class.java)
-                .ceshi()
+                .testFormPost("333","444")
                 .compose(NetWorkSchedulers.composeIoThread())
                 .subscribe(object :Observer<MagicMirrorResponse<Any>>{
                     override fun onComplete() {
