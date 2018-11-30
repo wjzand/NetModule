@@ -10,7 +10,7 @@ import io.reactivex.disposables.Disposable
 interface DownLoadObserver{
 
 
-    fun onProgress(progress:String)
+    fun onProgress(progress:Int)
 
 
     fun onComplete()

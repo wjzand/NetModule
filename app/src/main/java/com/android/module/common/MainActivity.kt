@@ -2,6 +2,7 @@ package com.android.module.common
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import com.android.net.NetWorkSchedulers
 import com.android.net.RetrofitProvider
@@ -12,6 +13,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.logging.HttpLoggingInterceptor
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
     private var retrofitProvider: RetrofitProvider?= null
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity() {
                         .create())
                 .build()
 
-        retrofitProvider!!.createApi(ApiService::class.java)
+       /* retrofitProvider!!.createApi(ApiService::class.java)
                 .testFormPost("333","444")
                 .compose(NetWorkSchedulers.composeIoThread())
                 .subscribe(object :Observer<MagicMirrorResponse<Any>>{
@@ -53,7 +55,8 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 })
-
-
+*/
+        DownLoadManager.getInstance.startDownLoad("http://magic-mirror-diancang.oss-cn-shanghai.aliyuncs.com/magic/201807/horizontal_ad_default.png?ts=1541668232070",
+                File(Environment.getExternalStorageDirectory().absolutePath + File.separator + "wjz.png"))
     }
 }

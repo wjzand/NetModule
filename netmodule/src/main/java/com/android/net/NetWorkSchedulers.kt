@@ -22,6 +22,6 @@ object NetWorkSchedulers {
 
     fun <T> composeThread(observableThread: Scheduler,observerThread:Scheduler): ObservableTransformer<T,T>{
         return ObservableTransformer { observable -> observable.subscribeOn(observableThread)
-                .subscribeOn(observerThread) }
+                .observeOn(observerThread) }
     }
 }

@@ -11,6 +11,5 @@ class NetWorkIntercptor :Interceptor{
 
     override fun intercept(chain: Interceptor.Chain?): Response {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        var request = chain!!.request()
     }
 }

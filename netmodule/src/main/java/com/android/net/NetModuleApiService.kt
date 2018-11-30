@@ -15,10 +15,10 @@ interface NetModuleApiService {
 
     @Streaming
     @GET
-    fun downLoadFile(@Url url: Url, @Header("RANGE") start:String):Observable<ResponseBody>
+    fun downLoadFile(@Url url: String, @Header("RANGE") start:String):Observable<ResponseBody>
 
 
     @Streaming
     @GET
-    fun downLoadFile(@Url url: Url):Observable<ResponseBody>
+    fun downLoadFile(@Url url: String):Observable<ResponseBody>
 }

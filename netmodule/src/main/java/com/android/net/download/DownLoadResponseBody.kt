@@ -1,5 +1,6 @@
 package com.android.net.download
 
+import android.util.Log
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okio.*
@@ -13,8 +14,8 @@ import java.util.*
 class DownLoadResponseBody(responseBody: ResponseBody,downLoadObserver: DownLoadObserver): ResponseBody() {
     private var responseBody:ResponseBody? = null
     private var downLoadObserver:DownLoadObserver? = null
-    private var byteRead:Long = 0L
     private var totalRead:Long = 0L
+    private var bufferedSource:BufferedSource? = null
 
 
     init {
@@ -31,16 +32,19 @@ class DownLoadResponseBody(responseBody: ResponseBody,downLoadObserver: DownLoad
     }
 
     override fun source(): BufferedSource {
-        var bufferedSource:BufferedSource? = Okio.buffer(source(responseBody!!.source()))
+        bufferedSource = bufferedSource?:Okio.buffer(source(responseBody!!.source()))
         return bufferedSource!!
     }
 
     private fun source(source: Source):Source{
-        var forwardingSource:ForwardingSource = object : ForwardingSource(source){
+        val forwardingSource:ForwardingSource = object : ForwardingSource(source){
             override fun read(sink: Buffer?, byteCount: Long): Long {
-                byteRead =  super.read(sink, byteCount)
-                totalRead += if(byteRead == -1L)0L else byteRead
-                downLoadObserver!!.onProgress((totalRead/responseBody!!.contentLength()).toString())
+                val byteRead =  super.read(sink, byteCount)
+                if(byteRead != -1L){
+                    totalRead += byteRead
+                    downLoadObserver?.onProgress(((totalRead * 100/responseBody!!.contentLength()).toInt()))
+                    if(totalRead == contentLength()) downLoadObserver?.onComplete()
+                }
                 return byteRead
             }
         }
