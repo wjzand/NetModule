@@ -1,44 +1,32 @@
-package com.android.net.download
+package com.android.net
 
-import android.net.Uri
-import android.text.TextUtils
-import android.util.Log
-import com.android.net.NetModuleApiService
-import com.android.net.NetWorkSchedulers
-import com.android.net.RetrofitProvider
-import io.reactivex.Observer
+import com.android.net.download.DownLoadInterceptor
+import com.android.net.upload.UpLoadLoadRequestBody
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
-import io.reactivex.functions.Function
-import io.reactivex.schedulers.Schedulers
-import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.http.Url
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
 
 /**
  * Created by wjz on 2018/11/7
  * 下载管理类
  * 单例
  */
-class DownLoadManager private constructor(){
+class NetModuleManager private constructor() : NetProgressObserver {
     private var netModuleApiService:NetModuleApiService? = null
     private var disposable:Disposable? = null
-    private var downLoadObserver:DownLoadObserver? = null
+    private var downLoadInterceptor: DownLoadInterceptor? = null
 
     companion object {
         @Volatile
-        private var INSTANCE:DownLoadManager? = null
+        private var INSTANCE: NetModuleManager? = null
 
-        val getInstance : DownLoadManager
+        val getInstance : NetModuleManager
         get() {
             if(INSTANCE == null){
-                synchronized(DownLoadManager::class.java){
+                synchronized(NetModuleManager::class.java){
                     if(INSTANCE == null){
-                        INSTANCE = DownLoadManager()
+                        INSTANCE = NetModuleManager()
                     }
                 }
             }
@@ -47,9 +35,10 @@ class DownLoadManager private constructor(){
     }
 
     init {
-        netModuleApiService = RetrofitProvider.Builder
+        downLoadInterceptor = DownLoadInterceptor(this)
+        netModuleApiService = NetRetrofitProvider.Builder
                 .addLogInterceptor(HttpLoggingInterceptor.Level.BODY)
-                .addInterceptor(DownLoadInterceptor(downLoadObserver = downLoadObserver!!))
+                .addInterceptor(downLoadInterceptor!!)
                 .build()
                 .createApi(NetModuleApiService::class.java)
     }
@@ -71,16 +60,22 @@ class DownLoadManager private constructor(){
                 }
     }
 
-    fun pauseDownLoad(){
+    fun startUpLoad(url: String,filePath:File){
 
     }
 
-    fun resumeDownLoad(){
-
-    }
 
     fun cancelDownLoad(){
         disposable?.dispose()
     }
+
+    override fun onComplete() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onProgress(progress: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
 
 }

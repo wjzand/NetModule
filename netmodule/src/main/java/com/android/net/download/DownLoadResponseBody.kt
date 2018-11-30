@@ -1,19 +1,18 @@
 package com.android.net.download
 
-import android.util.Log
+import com.android.net.NetProgressObserver
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okio.*
-import java.util.*
 
 /**
  * Created by wjz on 2018/11/7
  * 下载body，这里主要是进度添加
  *
  */
-class DownLoadResponseBody(responseBody: ResponseBody,downLoadObserver: DownLoadObserver): ResponseBody() {
+class DownLoadResponseBody(responseBody: ResponseBody,downLoadObserver: NetProgressObserver): ResponseBody() {
     private var responseBody:ResponseBody? = null
-    private var downLoadObserver:DownLoadObserver? = null
+    private var downLoadObserver: NetProgressObserver? = null
     private var totalRead:Long = 0L
     private var bufferedSource:BufferedSource? = null
 

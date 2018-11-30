@@ -1,11 +1,9 @@
 package com.android.net
 
 import io.reactivex.Observable
+import okhttp3.MultipartBody
 import okhttp3.ResponseBody
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Streaming
-import retrofit2.http.Url
+import retrofit2.http.*
 
 /**
  * Created by wjz on 2018/11/7
@@ -21,4 +19,8 @@ interface NetModuleApiService {
     @Streaming
     @GET
     fun downLoadFile(@Url url: String):Observable<ResponseBody>
+
+
+    @POST
+    fun uploadFile(@Url url: String,@Part part: MultipartBody.Part):Observable<ResponseBody>
 }

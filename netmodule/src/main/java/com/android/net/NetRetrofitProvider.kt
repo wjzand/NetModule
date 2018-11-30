@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
  * 构建retrofit
  *
  */
-class RetrofitProvider(url: String, connectTime: Long, readTime: Long, writeTime: Long, interceptorList: ArrayList<Interceptor>) {
+class NetRetrofitProvider(url: String, connectTime: Long, readTime: Long, writeTime: Long, interceptorList: ArrayList<Interceptor>) {
     private var retrofit:Retrofit?= null
     private var okHttpClient:OkHttpClient?= null
     private var okHttpClientBuilder:OkHttpClient.Builder?=null
@@ -101,8 +101,8 @@ class RetrofitProvider(url: String, connectTime: Long, readTime: Long, writeTime
             return this
         }
 
-        fun build():RetrofitProvider{
-            return RetrofitProvider(this.url,this.connectTime,this.readTime,this.writeTime, interceptorList)
+        fun build():NetRetrofitProvider{
+            return NetRetrofitProvider(this.url,this.connectTime,this.readTime,this.writeTime, interceptorList)
         }
     }
 

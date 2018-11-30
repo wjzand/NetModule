@@ -1,13 +1,14 @@
 package com.android.net.download
 
+import com.android.net.NetProgressObserver
 import okhttp3.*
 
 /**
  * Created by wjz on 2018/11/7
  *  下载  拦截器
  */
-class DownLoadInterceptor(downLoadObserver: DownLoadObserver):Interceptor {
-    private var downLoadObserver:DownLoadObserver?= null
+class DownLoadInterceptor(downLoadObserver: NetProgressObserver):Interceptor {
+    private var downLoadObserver: NetProgressObserver?= null
 
     init {
       this.downLoadObserver = downLoadObserver
