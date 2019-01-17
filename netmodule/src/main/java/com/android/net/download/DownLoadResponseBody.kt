@@ -36,17 +36,16 @@ class DownLoadResponseBody(responseBody: ResponseBody,downLoadObserver: NetProgr
     }
 
     private fun source(source: Source):Source{
-        val forwardingSource:ForwardingSource = object : ForwardingSource(source){
+        return object : ForwardingSource(source){
             override fun read(sink: Buffer?, byteCount: Long): Long {
                 val byteRead =  super.read(sink, byteCount)
                 if(byteRead != -1L){
                     totalRead += byteRead
-                    downLoadObserver?.onProgress(((totalRead * 100/responseBody!!.contentLength()).toInt()))
+                    downLoadObserver?.onProgress(((totalRead * 100/ responseBody!!.contentLength()).toInt()))
                     if(totalRead == contentLength()) downLoadObserver?.onComplete()
                 }
                 return byteRead
             }
         }
-        return forwardingSource
     }
 }

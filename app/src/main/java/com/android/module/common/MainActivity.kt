@@ -1,15 +1,28 @@
 package com.android.module.common
 
+import android.annotation.SuppressLint
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import com.android.net.NetRetrofitProvider
 import com.android.net.NetModuleManager
+import com.android.net.NetProgressObserver
 import com.android.net.interceptor.CommonParamterInterceptor
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NetProgressObserver {
+    @SuppressLint("LogNotTimber")
+    override fun onProgress(progress: Int) {
+        Log.e("MainActivity",progress.toString())
+    }
+
+    override fun onComplete() {
+        Log.e("MainActivity","onComplete")
+
+    }
+
     private var retrofitProvider: NetRetrofitProvider?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +64,6 @@ class MainActivity : AppCompatActivity() {
                 })
 */
         NetModuleManager.getInstance.startDownLoad("http://magic-mirror-diancang.oss-cn-shanghai.aliyuncs.com/magic/201807/horizontal_ad_default.png?ts=1541668232070",
-                File(Environment.getExternalStorageDirectory().absolutePath + File.separator + "wjz.png"))
+                File(Environment.getExternalStorageDirectory().absolutePath + File.separator + "wjz.png"),this);
     }
 }

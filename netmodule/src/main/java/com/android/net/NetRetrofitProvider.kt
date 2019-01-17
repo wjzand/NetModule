@@ -18,16 +18,15 @@ import java.util.concurrent.TimeUnit
  *
  */
 class NetRetrofitProvider(url: String, connectTime: Long, readTime: Long, writeTime: Long, interceptorList: ArrayList<Interceptor>) {
-    private var retrofit:Retrofit?= null
-    private var okHttpClient:OkHttpClient?= null
-    private var okHttpClientBuilder:OkHttpClient.Builder?=null
+    private var retrofit:Retrofit
+    private var okHttpClient:OkHttpClient
+    private var okHttpClientBuilder:OkHttpClient.Builder = OkHttpClient.Builder()
 
     init {
-        okHttpClientBuilder = OkHttpClient.Builder()
 
-        interceptorList.forEach { okHttpClientBuilder!!.addInterceptor(it)}
+        interceptorList.forEach { okHttpClientBuilder.addInterceptor(it)}
 
-        okHttpClient = okHttpClientBuilder!!
+        okHttpClient = okHttpClientBuilder
                 .readTimeout(readTime,TimeUnit.SECONDS)
                 .writeTimeout(writeTime,TimeUnit.SECONDS)
                 .connectTimeout(connectTime,TimeUnit.SECONDS)
@@ -36,7 +35,7 @@ class NetRetrofitProvider(url: String, connectTime: Long, readTime: Long, writeT
 
         retrofit = Retrofit.Builder()
                 .baseUrl(url)
-                .client(okHttpClient!!)
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()

@@ -1,8 +1,13 @@
 package com.android.net
 
+import android.annotation.SuppressLint
 import com.android.net.download.DownLoadInterceptor
 import com.android.net.upload.UpLoadLoadRequestBody
+import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.BiFunction
+import io.reactivex.functions.Function
 import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 import java.io.FileOutputStream
@@ -13,9 +18,10 @@ import java.io.FileOutputStream
  * 单例
  */
 class NetModuleManager private constructor() : NetProgressObserver {
-    private var netModuleApiService:NetModuleApiService? = null
-    private var disposable:Disposable? = null
-    private var downLoadInterceptor: DownLoadInterceptor? = null
+    private val netModuleApiService:NetModuleApiService
+    private val downLoadInterceptor: DownLoadInterceptor = DownLoadInterceptor(this)
+    private var netDownloadObserver:NetProgressObserver? = null
+    private var compositeDisposable = CompositeDisposable()
 
     companion object {
         @Volatile
@@ -35,16 +41,20 @@ class NetModuleManager private constructor() : NetProgressObserver {
     }
 
     init {
-        downLoadInterceptor = DownLoadInterceptor(this)
         netModuleApiService = NetRetrofitProvider.Builder
                 .addLogInterceptor(HttpLoggingInterceptor.Level.BODY)
-                .addInterceptor(downLoadInterceptor!!)
+                .addInterceptor(downLoadInterceptor)
                 .build()
                 .createApi(NetModuleApiService::class.java)
     }
 
     fun startDownLoad(url: String,outFile:File){
-        disposable = netModuleApiService!!.downLoadFile(url)
+        startDownLoad(url,outFile,null)
+    }
+
+    fun startDownLoad(url: String,outFile:File,downLoadObserver: NetProgressObserver?){
+        netDownloadObserver = downLoadObserver
+        val downDisposable = netModuleApiService.downLoadFile(url)
                 .compose(NetWorkSchedulers.composeIoThread())
                 .map { t -> t.byteStream() }
                 .subscribe { t ->
@@ -58,23 +68,24 @@ class NetModuleManager private constructor() : NetProgressObserver {
                     t?.close()
                     fileOutputStream.close()
                 }
+        compositeDisposable.add(downDisposable)
     }
 
-    fun startUpLoad(url: String,filePath:File){
+    @SuppressLint("CheckResult")
+    fun startUpLoad(url: String, filePath:File){
 
     }
-
 
     fun cancelDownLoad(){
-        disposable?.dispose()
+        compositeDisposable.dispose()
     }
 
     override fun onComplete() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        netDownloadObserver?.onComplete()
     }
 
     override fun onProgress(progress: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        netDownloadObserver?.onProgress(progress)
     }
 
 

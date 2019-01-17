@@ -38,14 +38,14 @@ class CommonParamterInterceptor(headMap: HashMap<String, String>, paramterMap: H
     }
 
     private fun addGetParamter(request: Request,requestBuilder: Request.Builder){
-        var urlBuilder:HttpUrl.Builder = request.url().newBuilder()
+        val urlBuilder:HttpUrl.Builder = request.url().newBuilder()
         commonParamterMap.forEach {urlBuilder.addQueryParameter(it.key,it.value)}
         requestBuilder.url(urlBuilder.build())
     }
 
     private fun addPostParamter(request: Request,requestBuilder: Request.Builder){
-        var formBody:FormBody = (request.body() as FormBody?)!!
-        var builder: FormBody.Builder = FormBody.Builder()
+        val formBody:FormBody = (request.body() as FormBody?)!!
+        val builder: FormBody.Builder = FormBody.Builder()
         for (i in 0..(formBody.size()-1)){
             builder.add(formBody.name(i),formBody.value(i))
         }
