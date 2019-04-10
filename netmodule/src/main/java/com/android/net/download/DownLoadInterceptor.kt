@@ -17,7 +17,7 @@ class DownLoadInterceptor(downLoadObserver: NetProgressObserver):Interceptor {
     override fun intercept(chain: Interceptor.Chain?): Response {
         val response:Response = chain!!.proceed(chain.request())
         return response.newBuilder()
-                .body(DownLoadResponseBody(response.body()!!, downLoadObserver!!))
+                .body(DownLoadResponseBody(response.body()!!, downLoadObserver))
                 .build()
     }
 }

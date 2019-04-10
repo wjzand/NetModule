@@ -10,7 +10,7 @@ import okio.*
  * 下载body，这里主要是进度添加
  *
  */
-class DownLoadResponseBody(responseBody: ResponseBody,downLoadObserver: NetProgressObserver): ResponseBody() {
+class DownLoadResponseBody(responseBody: ResponseBody,downLoadObserver: NetProgressObserver?): ResponseBody() {
     private var responseBody:ResponseBody? = null
     private var downLoadObserver: NetProgressObserver? = null
     private var totalRead:Long = 0L

@@ -42,7 +42,7 @@ class NetRetrofitProvider(url: String, connectTime: Long, readTime: Long, writeT
     }
 
     fun <T> createApi(service:Class<T>): T{
-         return retrofit!!.create(service)
+         return retrofit.create(service)
     }
 
     object Builder{
@@ -91,12 +91,8 @@ class NetRetrofitProvider(url: String, connectTime: Long, readTime: Long, writeT
 
         @SuppressLint("LogNotTimber")
         fun addInterceptor(interceptor: Interceptor): Builder {
-            if(!interceptorList.contains(interceptor)) {
-                interceptorList.add(interceptor)
-                Log.e(TAG,"加入interceptor")
-            }else{
-                Log.e(TAG,"interceptor已存在")
-            }
+            interceptorList.add(interceptor)
+            Log.e(TAG,"加入interceptor")
             return this
         }
 

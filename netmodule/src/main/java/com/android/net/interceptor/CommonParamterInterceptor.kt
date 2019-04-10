@@ -24,8 +24,8 @@ class CommonParamterInterceptor(headMap: HashMap<String, String>, paramterMap: H
 
 
     override fun intercept(chain: Interceptor.Chain?): Response {
-        var oldRequest = chain!!.request()
-        var newRequestBuilder = oldRequest.newBuilder()
+        val oldRequest = chain!!.request()
+        val newRequestBuilder = oldRequest.newBuilder()
         addHead(newRequestBuilder)
         when(oldRequest.method()){
             METHOD_GET -> addGetParamter(oldRequest,newRequestBuilder)

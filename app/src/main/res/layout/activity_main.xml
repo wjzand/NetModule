@@ -7,12 +7,54 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/progressText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toTopOf="@+id/pause"
+        app:layout_constraintStart_toEndOf="@+id/downLoad"
+        app:layout_constraintTop_toTopOf="@+id/downLoad"
+        android:layout_marginLeft="10dp" />
+
+    <TextView
+        android:id="@+id/progressTextPic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="8dp"
+        android:text="Hello World!"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toTopOf="@+id/pausePic"
+        app:layout_constraintStart_toEndOf="@+id/downLoadPic"
+        app:layout_constraintTop_toTopOf="@+id/downLoadPic" />
+
+    <Button
+        android:id="@+id/downLoad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="下载apk"/>
+
+    <Button
+        android:id="@+id/pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/downLoad"
+        android:text="暂停"/>
+
+    <Button
+        android:id="@+id/downLoadPic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="下载pic"
+        app:layout_constraintTop_toBottomOf="@id/pause" />
+
+    <Button
+        android:id="@+id/pausePic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/downLoadPic"
+        android:text="暂停pic"/>
+
 
 </android.support.constraint.ConstraintLayout>
