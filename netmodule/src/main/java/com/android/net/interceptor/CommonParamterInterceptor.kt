@@ -27,12 +27,14 @@ class CommonParamterInterceptor(headMap: HashMap<String, String>, paramterMap: H
         val oldRequest = chain!!.request()
         val newRequestBuilder = oldRequest.newBuilder()
         addHead(newRequestBuilder)
-        when(oldRequest.method()){
-            METHOD_GET -> addGetParamter(oldRequest,newRequestBuilder)
-            METHOD_POST -> addPostParamter(oldRequest,newRequestBuilder)
-            METHOD_OPTIONS -> addOptionsParamter(oldRequest)
+        if(commonParamterMap.isNotEmpty()){
+            when(oldRequest.method()){
+                METHOD_GET -> addGetParamter(oldRequest,newRequestBuilder)
+                METHOD_POST -> addPostParamter(oldRequest,newRequestBuilder)
+                METHOD_OPTIONS -> addOptionsParamter(oldRequest)
+            }
         }
-        var newRequest = newRequestBuilder.build()
+        val newRequest = newRequestBuilder.build()
         return chain.proceed(newRequest)
 
     }
